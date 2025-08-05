@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div style="max-width: 700px; margin: 4rem auto; padding: 2rem; text-align: center; background-color: #f0fff4; border: 2px solid #38c172; border-radius: 15px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);">
+    
+    <h1 style="font-size: 2rem; color: #38c172;">✅ سفارش با موفقیت ثبت شد!</h1>
+    <p style="margin-top: 1rem; font-size: 1.1rem; color: #333;">مرسی از خریدت 💚 ما به زودی سفارشتو پردازش می‌کنیم.</p>
+    
+    
+
+    <div style="margin-top: 2rem;">
+        <a href="{% url 'home' %}" style="background-color: #38c172; color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: bold;">
+            🛍 بازگشت به فروشگاه
+        </a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}لیست علاقه مندی ها{% endblock %}
+
+{% block content %}
+
+
+    {% for prods in wishlist_items %}
+      <div class="card" style="background: white; border-radius: 16px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06); overflow: hidden; margin-bottom: 20px; display: flex; gap: 12px; align-items: center;">
+        <img src="{{ prods.product.image_url }}" alt="{{ prods.product.name }}" style="width: 120px; height: 120px; object-fit: cover; flex-shrink: 0; border-radius: 12px;">
+        <div class="card-body" style="padding: 12px; flex-grow: 1;">
+          <a href="{% url 'view_product' prods.product.id %}" style="font-size: 1.1rem; margin-bottom: 0.3rem; color: #28a745;">{{ prods.product.name }}</a>
+          <p class="card-text" style="margin: 2px 0; font-size: 14px; color: #444;">برند: {{ prods.product.brand }}</p>
+          <p class="card-text" style="margin: 2px 0; font-size: 14px; color: #444;">دسته‌بندی: {{ prods.product.category }}</p>
+          <p class="card-text" style="margin: 2px 0; font-size: 14px; color: #444;">قیمت: {{ prods.product.price }}</p>
+        
+          <form action="{% url 'delete_from_wishlist' product_id=prods.product.id %}" method="post" style="display: inline;">
+            {% csrf_token %}
+            <button type="submit" style="background: crimson; color: white; padding: 5px 5px; border: none; border-radius: 15px;">🗑 حذف</button>
+          </form>
+        </div>
+      </div>
+
+    {% empty %}
+      <p class="not-found" style="text-align: center; color: #888; font-size: 16px; margin-top: 40px;">محصولی یافت نشد.</p>
+    {% endfor %}
+
+
+
+{% endblock %}

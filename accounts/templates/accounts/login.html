@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>ورود</title>
+  <style>
+    body {
+      font-family: 'Vazir', 'Segoe UI', sans-serif;
+      background-color: #f6fff9;
+      color: #2f4f4f;
+      margin: 0;
+      padding: 0;
+      direction: rtl;
+    }
+
+    .login-container {
+      max-width: 450px;
+      margin: 80px auto;
+      background-color: #ffffff;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 8px 16px rgba(0, 128, 0, 0.1);
+      border: 2px solid #a5d6a7;
+    }
+
+    .login-container h2 {
+      text-align: center;
+      color: #388e3c;
+      margin-bottom: 25px;
+    }
+
+    .login-container label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+      color: #2e7d32;
+    }
+
+    .login-container input[type="text"],
+    .login-container input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #a5d6a7;
+      border-radius: 8px;
+      background-color: #f9fff9;
+      font-family: inherit;
+    }
+
+    .login-container button {
+      width: 100%;
+      margin-top: 25px;
+      padding: 12px;
+      background-color: #66bb6a;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.3s ease;
+    }
+
+    .login-container button:hover {
+      background-color: #43a047;
+    }
+
+    .signup-link {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .signup-link a {
+      color: #388e3c;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .signup-link a:hover {
+      text-decoration: underline;
+    }
+
+    .error-msg {
+      color: red;
+      font-weight: bold;
+      text-align: center;
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="login-container">
+    <h2>ورود به حساب کاربری</h2>
+    <form method="POST">
+      {% csrf_token %}
+      <label>نام کاربری:</label>
+      <input type="text" name="username" required>
+
+      <label>رمز عبور:</label>
+      <input type="password" name="password" required>
+
+      <button type="submit">ورود</button>
+    </form>
+
+    <div class="signup-link">
+      <p>🤨اکانت نداری داش؟ <a href="{% url 'signup' %}">ثبت‌نام کن</a></p>
+    </div>
+
+    {% if messages %}
+      <div class="error-msg">
+        {% for message in messages %}
+          <p>{{ message }}</p>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+
+</body>
+</html>

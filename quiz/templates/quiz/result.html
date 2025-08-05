@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container">
+  <h1>نتیجه روتین پوستی شما</h1>
+
+  <div class="skin-info">
+    <h2>نوع پوست</h2>
+    <p>🥑 {{ result.skin_type }} </p>
+  </div>
+
+  <div class="concerns">
+    <h2>نگرانی‌ها</h2>
+    <div class="concerns-list">
+      {% for concern in result.concerns %}
+        <span>{{ concern }}</span>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="routine">
+    <h2>روتین مراقبت پوستی</h2>
+    <div class="routine-sections">
+      <div class="routine-card">
+        <h3>صبح (AM)</h3>
+        <ul>
+          {% for item in result.routine.AM %}
+            <li><strong>{{ item.step }}:</strong> {{ item.product }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      <div class="routine-card">
+        <h3>شب (PM)</h3>
+        <ul>
+          {% for item in result.routine.PM %}
+            <li><strong>{{ item.step }}:</strong> {{ item.product }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

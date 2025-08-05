@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>ثبت‌ نام</title>
+  <style>
+    body {
+      font-family: 'Vazir', 'Segoe UI', sans-serif;
+      background-color: #f6fff9;
+      color: #2f4f4f;
+      margin: 0;
+      padding: 0;
+      direction: rtl;
+    }
+
+    .signup-container {
+      max-width: 500px;
+      margin: 50px auto;
+      background-color: #ffffff;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 8px 16px rgba(0, 128, 0, 0.1);
+      border: 2px solid #a5d6a7;
+    }
+
+    .signup-container h1 {
+      text-align: center;
+      color: #388e3c;
+      margin-bottom: 25px;
+    }
+
+    .signup-container label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+      color: #2e7d32;
+    }
+
+    .signup-container input[type="text"],
+    .signup-container input[type="email"],
+    .signup-container input[type="password"],
+    .signup-container select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #a5d6a7;
+      border-radius: 8px;
+      background-color: #f9fff9;
+      font-family: inherit;
+    }
+
+    .signup-container input[type="checkbox"] {
+      margin-left: 8px;
+    }
+
+    .checkbox-group {
+      background-color: #e8f5e9;
+      padding: 10px;
+      border-radius: 10px;
+      margin-top: 5px;
+    }
+
+    .signup-container button {
+      width: 100%;
+      margin-top: 25px;
+      padding: 12px;
+      background-color: #66bb6a;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.3s ease;
+    }
+
+    .signup-container button:hover {
+      background-color: #43a047;
+    }
+
+    .login-link {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .login-link a {
+      color: #388e3c;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .login-link a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="signup-container">
+    <h1>ثبت‌ نام کاربر جدید</h1>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+      {% for field in form %}
+        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {% if field|slice:":4" == "<ul " %}
+          <div class="checkbox-group">
+            {{ field }}
+          </div>
+        {% else %}
+          {{ field }}
+        {% endif %}
+        {{ field.errors }}
+      {% endfor %}
+      <button type="submit">ثبت‌ نام</button>
+    </form>
+
+    <div class="login-link">
+      <p>قبلاً ثبت‌ نام کرده‌ای؟ <a href="{% url 'login' %}">وارد شو</a></p>
+    </div>
+  </div>
+
+</body>
+</html>

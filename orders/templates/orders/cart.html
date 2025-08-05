@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container" style="max-width: 900px; margin: 0 auto; padding: 2rem 1rem;">
+    <h2 style="text-align: center; margin-bottom: 2rem;">🛒 سبد خرید شما</h2>
+
+    {% if items %}
+        <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr style="border-bottom: 2px solid #ccc;">
+                    <th style="text-align: left;">محصول</th>
+                    <th>تعداد</th>
+                    <th>قیمت واحد</th>
+                    <th>جمع کل</th>
+                    <th>عملیات</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                <tr style="border-bottom: 1px solid #eee;">
+                    <td style="display: flex; align-items: center; gap: 10px;">
+                        <img src="{{ item.image }}" alt="{{ item.name }}" style="width: 50px; height: 50px; object-fit: cover;">
+                        {{ item.name }}
+                    </td>
+                    <td style="text-align: center;">{{ item.quantity }}</td>
+                    <td style="text-align: center;">{{ item.price }} تومان</td>
+                    <td style="text-align: center;">{{ item.total }} تومان</td>
+                    <td style="text-align: center;">
+                        <form action="{% url 'delete_from_cart' product_id=item.id %}" method="post" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" style="background: crimson; color: white; padding: 5px 10px; border: none; border-radius: 5px;">🗑 حذف</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div style="margin-top: 2rem; text-align: right;">
+            <h3>💰 مبلغ کل: {{ total }} تومان</h3>
+            <form action="{% url 'finalize_order' %}" method="post" style="margin-top: 1rem;">
+                {% csrf_token %}
+                <button type="submit" style="background: #28a745; color: white; padding: 10px 20px; border: none; border-radius: 8px; font-size: 1rem;">
+                    ✅ نهایی کردن سفارش
+                </button>
+            </form>
+        </div>
+
+    {% else %}
+        <p style="text-align: center; font-size: 1.2rem;">سبد خرید شما خالی است 😕</p>
+        <div style="text-align: center; margin-top: 2rem;">
+            <a href="{% url 'home' %}" style="text-decoration: none; background: #007bff; color: white; padding: 10px 20px; border-radius: 8px;">
+                🛍 بازگشت به فروشگاه
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

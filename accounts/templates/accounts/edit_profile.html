@@ -1,0 +1,204 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}ویرایش پروفایل{% endblock %}
+
+{% block content %}
+<div class="profile-edit-container">
+    <h2><i class="fas fa-user-edit"></i> ویرایش پروفایل</h2>
+
+    <form method="post" novalidate>
+        {% csrf_token %}
+
+        <div class="section">
+            <h4><i class="fas fa-id-card"></i> اطلاعات حساب</h4>
+            <div class="form-group">
+                <label for="{{ form.username.id_for_label }}">نام کاربری:</label>
+                {{ form.username }}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.email.id_for_label }}">ایمیل:</label>
+                {{ form.email }}
+            </div>
+        </div>
+
+        <div class="section">
+            <h4><i class="fas fa-spa"></i> مشخصات پوست</h4>
+            <div class="form-group">
+                <label for="{{ form.skin_type.id_for_label }}">نوع پوست:</label>
+                {{ form.skin_type }}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.concerns.id_for_label }}">مشکلات پوستی:</label>
+                {{ form.concerns }}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.preferences.id_for_label }}">ترجیحات محصول:</label>
+                {{ form.preferences }}
+            </div>
+        </div>
+
+        <div class="section">
+            <h4><i class="fas fa-lock"></i> تغییر رمز عبور</h4>
+            <div class="form-group">
+                <label for="{{ form.current_password.id_for_label }}">رمز فعلی:</label>
+                {{ form.current_password }}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.new_password.id_for_label }}">رمز جدید:</label>
+                {{ form.new_password }}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.confirm_password.id_for_label }}">تکرار رمز جدید:</label>
+                {{ form.confirm_password }}
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="submit-btn">
+                <i class="fas fa-save"></i> ذخیره تغییرات
+            </button>
+        </div>
+
+        {% if form.errors %}
+            <div class="error-messages">
+                <ul>
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    {% endfor %}
+                    {% for error in form.non_field_errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+    </form>
+</div>
+
+
+<style>
+@import url('https://cdn.fontcdn.ir/Font/Persian/Vazir/Vazir.css');
+
+body {
+    font-family: 'Vazir', sans-serif;
+    background-color: #f5f7fa;
+    direction: rtl;
+    margin: 0;
+}
+
+.profile-edit-container {
+    max-width: 600px;
+    margin: 2rem auto;
+    background: #ffffff;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.profile-edit-container h2 {
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 2rem;
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+.section h4 {
+    color: #34495e;
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    font-weight: 500;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.9rem;
+    color: #34495e;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #dcdcdc;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    background-color: #f9fafb;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #88d99b;
+    box-shadow: 0 0 8px rgba(136, 217, 155, 0.3);
+}
+
+.form-actions {
+    text-align: center;
+    margin-top: 2rem;
+}
+
+.submit-btn {
+    background-color: #88d99b;
+    color: white;
+    padding: 0.8rem 2rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.submit-btn:hover {
+    background-color: #6ab879;
+    transform: translateY(-2px);
+}
+
+.submit-btn:active {
+    transform: translateY(0);
+}
+
+.error-messages {
+    color: #e74c3c;
+    margin-top: 1rem;
+    font-size: 0.85rem;
+}
+
+.error-messages ul {
+    list-style: none;
+    padding: 0;
+}
+
+.error-messages li {
+    margin-bottom: 0.5rem;
+}
+
+@media (max-width: 768px) {
+    .profile-edit-container {
+        margin: 1rem;
+        padding: 1.5rem;
+    }
+
+    .profile-edit-container h2 {
+        font-size: 1.5rem;
+    }
+
+    .submit-btn {
+        padding: 0.7rem 1.5rem;
+        font-size: 0.9rem;
+    }
+}
+</style>
+
+{% endblock %}
