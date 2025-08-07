@@ -1,47 +1,26 @@
 {% extends 'base.html' %}
-
 {% block content %}
-<div class="quiz-container" style="max-width: 700px; margin: auto;">
-  <h2 style="text-align: center; margin-bottom: 2rem;">🧪 کوییز پوست</h2>
-  
-  <form method="post">
+<div class="quiz-container" style="max-width:700px;margin:auto;padding:2rem;">
+  <h2 style="text-align:center;margin-bottom:1.5rem;">🔍 مرحله اول: تشخیص نوع پوست و نگرانی‌ها</h2>
+  <form method="post" action="{% url 'get_quiz' %}">
     {% csrf_token %}
-    
     {% for field in form %}
-      <div class="question-block" style="margin-bottom: 2rem;">
-        <label style="font-weight: bold; display: block; margin-bottom: 0.5rem;">
-          {{ field.label }}
-        </label>
-        
-        <input 
-          type="range" 
-          name="{{ field.html_name }}" 
-          id="{{ field.id_for_label }}" 
-          min="1" max="10" value="5"
-          oninput="document.getElementById('val-{{ forloop.counter }}').innerText = this.value"
-          style="width: 100%;"
-        >
-        
-        <div style="text-align: right; font-size: 0.9rem;">
-          نمره: <span id="val-{{ forloop.counter }}">5</span> / 10
-        </div>
+      <div style="margin-bottom:1.2rem;">
+        <label style="font-weight:bold;">{{ field.label }}</label>
+        {{ field }}
+        <span style="float:right;">مقدار: <span id="val{{ forloop.counter }}">5</span></span>
+        <script>
+          document.getElementById("{{ field.id_for_label }}").addEventListener("input", function() {
+            document.getElementById("val{{ forloop.counter }}").innerText = this.value;
+          });
+        </script>
       </div>
     {% endfor %}
-    
-    <button type="submit" style="
-      background-color: #4CAF50;
-      color: white;
-      padding: 0.7rem 1.5rem;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      display: block;
-      margin: auto;
-      font-size: 1rem;
-    ">
-      ارسال پاسخ‌ها
-    </button>
+    <div style="text-align:center;">
+      <button type="submit" style="padding:.5rem 1rem;background-color:#28a745;color:white;border:none;border-radius:5px;">
+        ارسال و ادامه
+      </button>
+    </div>
   </form>
 </div>
 {% endblock %}
-

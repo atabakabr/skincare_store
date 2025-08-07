@@ -1,118 +1,190 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-import requests
-import json
-import uuid
 from .models import question, quiz_results
 from .forms import ScaleQuizForm
-from products.models import Product
+from products.models import Product,SkinType,Concern
+from .forms import PreferencesForm
 
-API_KEY = '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'
-HF_CHAT_URL = "https://router.huggingface.co/v1/chat/completions"
+weights = {
+    1: {'dry': 0.7, 'sensitive': 0.3},
+    2: {'oily': 0.8, 'acne': 0.2},
+    3: {'oily': 0.5, 'sensitive': 0.5},
+    4: {'sensitive': 1.0},
+    5: {'oily': 0.6, 'combination': 0.4},
+    6: {'dry': 0.8},
+    7: {'sensitive': 0.9},
+    8: {'acne': 0.9},
+    9: {'oily': 0.7, 'sensitive': 0.3},
+    10: {'combination': 1.0},
+    11: {'eyebag': 1.0},
+    12: {'acne': 0.7, 'sensitive': 0.3},
+    13: {'sensitive': 1.0},
+    14: {'dry': 0.8},
+    15: {'oily': 0.6, 'acne': 0.4},
+    16: {'acne': 0.8, 'pigmentation': 0.2},
+    17: {'oily': 1.0},
+    18: {'oily': 0.7},
+    19: {'sensitive': 1.0},
+    20: {'sensitive': 1.0},
+    21: {'wrinkles': 1.0},
+    22: {'wrinkles': 0.7, 'dullness': 0.3},
+    23: {'acne': 0.7, 'oily': 0.3},
+    24: {'acne': 0.8, 'hormonal': 0.2},
+    25: {'dullness': 1.0},
+    26: {'oiliness': 0.6, 'texture': 0.4},
+    27: {'sensitive': 0.9},
+    28: {'sensitive': 1.0},
+    29: {'redness': 0.8, 'sensitive': 0.2},
+    30: {'combination': 1.0},
+    31: {'combination': 0.6, 'oily': 0.4},
+    32: {'texture': 1.0},
+    33: {'sensitive': 0.5, 'hormonal': 0.5},
+    34: {'dry': 0.7, 'flaky': 0.3},
+    35: {'all': 1.0},
+    36: {'acne': 0.8, 'sensitive': 0.2},
+    37: {'dry': 0.5, 'oily': 0.5},
+    38: {'sensitive': 0.9},
+    39: {'dry': 0.6, 'urban_damage': 0.4},
+    40: {'dry': 0.5, 'oily': 0.5},
+}
 
-from django.shortcuts import render, redirect
-from django.contrib import messages
-import requests
-from .models import question, quiz_results
-from .forms import ScaleQuizForm
-from products.models import Product
 
-API_KEY    = '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'
-HF_CHAT_URL = "https://router.huggingface.co/v1/chat/completions"
 
-def ask_mistral(prompt: str) -> str:
-    headers = {
-        "Authorization": f"Bearer {API_KEY}",
-        "Content-Type":  "application/json",
-    }
-    payload = {
-        "model":       "deepseek-ai/DeepSeek-R1-0528:novita",
-        "messages":    [{"role": "user", "content": prompt}],
-        "temperature": 0.7,
-        "max_tokens":  512,
-    }
-    try:
-        resp = requests.post(HF_CHAT_URL, headers=headers, json=payload, timeout=30)
-        resp.raise_for_status()
-    except requests.RequestException as e:
-        return f"خطا در تماس با API: {e}"
-    data = resp.json()
-    return data['choices'][0]['message']['content']
+skin_types=SkinType.objects.all()
+concerns=Concern.objects.all()
+
 
 def get_quiz(request):
-    qstns = question.objects.all()
+    score={}
+    top_concerns=[]
+    sk_tp_sc=0
+    sk_tp=None
+    qstn=question.objects.all()
+    if request.method=='POST':
+        form=ScaleQuizForm(request.POST, questions=qstn)
+        if form.is_valid():
+            for q in qstn:
+                v=form.cleaned_data.get(f'question_{q.id}', 0)
+                for e in weights[q.id]:
+                    if e in score:
+                        score[e]+=v*weights[q.id][e]
+                    else:
+                        score[e]=v*weights[q.id][e]
 
-    if request.method == 'POST':
-        form = ScaleQuizForm(request.POST, questions=qstns)
-        if not form.is_valid():
-            return render(request, 'quiz/quiz.html', {'form': form})
+            for c in concerns:
+                if (f'{c.name.lower()}' in score) and score[f'{c.name.lower()}']>6:
+                    top_concerns.append(c)
 
-        # 1) جمع‌آوری پاسخ‌ها
-        user_answers = {
-            q.text: form.cleaned_data[f"question_{q.id}"]
-            for q in qstns
-        }
+            for s in skin_types:
+                if (f'{s.name.lower()}' in score) and score[f'{s.name.lower()}']>sk_tp_sc:
+                    sk_tp_sc=score[f'{s}']
+                    sk_tp=s
+            quiz=quiz_results.objects.create(
+                user=request.user,
+                skin_type=sk_tp
+            )
+            quiz.concerns.add(*top_concerns)
+            quiz.save()
+            request.session['quiz_id']=str(quiz.quiz_id)
+            
+            return render(request,'quiz/result.html', {
+                'result':{
+                    'skin_type':sk_tp,
+                    'concerns':top_concerns,
+                    'routine':{}
+                }
+            })
 
-        # 2) ساخت بخش اول پرامپت (سوال‌ها)
-        prompt = (
-            "You are a skincare expert assistant. "
-            "Based on the user's responses to a skin quiz in Persian (each scored 0 to 10), "
-            "determine their skin type and concerns, and recommend a morning and night skincare routine "
-            "using **only** the provided list of products.\n\n"
-            "Each routine should include up to 4-5 steps (cleanser, treatment/serum, moisturizer, sunscreen (for AM), etc.). "
-            "Pick the most suitable products from the list for the user's skin type and concerns.\n\n"
-            "User responses:\n"
-        )
-        for text, score in user_answers.items():
-            prompt += f"Question: {text} → Score: {score}/10\n"
-
-        # 3) الحاق لیست محصولات داینامیک
-        prompt += "\nAvailable products (with tags): [\n"
-        for p in Product.objects.all():
-            # اگر M2M داری:
-            if hasattr(p, 'tags'):
-                tag_list = list(p.tags.values_list('name', flat=True))
-            else:
-                tag_list = p.tags.split(';') if p.tags else []
-            prompt += f'  {{"name": "{p.name}", "tags": {tag_list}}},\n'
-        prompt += "]\n\n"
-
-        # 4) دستور نهایی برای خروجی JSON
-        prompt += (
-            "Output **ONLY** a valid JSON object with the following structure:\n"
-            "{\n"
-            '  "skin_type": "dry|oily|combination|normal|sensitive",\n'
-            '  "concerns": ["acne","dryness","dark_spots","redness","wrinkles","oiliness"],\n'
-            '  "routine": {\n'
-            '    "AM": [\n'
-            '      {"step": "Cleanser",    "product": ""},\n'
-            '      {"step": "Serum",        "product": ""},\n'
-            '      {"step": "Moisturizer",  "product": ""},\n'
-            '      {"step": "Sunscreen",    "product": ""}\n'
-            '    ],\n'
-            '    "PM": [\n'
-            '      {"step": "Cleanser",    "product": ""},\n'
-            '      {"step": "Treatment",   "product": ""},\n'
-            '      {"step": "Moisturizer", "product": ""}\n'
-            '    ]\n'
-            "  }\n"
-            "}\n"
-            "**CRITICAL**: Return **ONLY** the JSON. Do NOT include any explanations or comments."
-        )
-
-        # 5) ارسال به API و دریافت پاسخ
-        ai_response = ask_mistral(prompt)
-        print(ai_response)
-        try:
-            result = json.loads(ai_response)
-        except json.JSONDecodeError:
-            messages.error(request, "خطا در دریافت پاسخ معتبر از مدل.")
-            return redirect('get_quiz')
-
-
-        return render(request, 'quiz/result.html', {'ai_response': result})
+            
 
     else:
-        form = ScaleQuizForm(questions=qstns)
-        return render(request, 'quiz/quiz.html', {'form': form})
+        form=ScaleQuizForm(questions=qstn)
 
+    return render(request,'quiz/quiz.html',{'form':form})
+
+#________________________________________________________
+
+def second_quiz(request):
+    quiz_id=request.session.get('quiz_id')
+    quiz=quiz_results.objects.get(quiz_id=quiz_id)
+
+    if request.method=='POST':
+        form=PreferencesForm(request.POST)
+        if form.is_valid():
+            quiz.preferences=form.cleaned_data
+            quiz.save()
+            return redirect('show_routine')
+    else:
+        form=PreferencesForm()
+
+    return render(request,'quiz/second_quiz.html',{
+        'form':form,
+        'skin_type':quiz.skin_type.name,
+        'concerns':[c.name for c in quiz.concerns.all()],
+    })
+
+def show_routine(request):
+	quiz_id=request.session.get('quiz_id')
+	quiz=quiz_results.objects.get(quiz_id=quiz_id)
+
+	skin=quiz.skin_type.name.lower()
+	concerns=[c.name.lower() for c in quiz.concerns.all()]
+	prefs=quiz.preferences or {}
+	routine={'AM':[],'PM':[]}
+
+	if Product.objects.filter(category='cleaner',skin_type__name__iexact=skin).exists():
+		cleaner=Product.objects.filter(category='cleaner',skin_type__name__iexact=skin).first()
+		routine['AM'].append(cleaner)
+		routine['PM'].append(cleaner)
+
+	if Product.objects.filter(category='moisturizer',skin_type__name__iexact=skin).exists():
+		moisturizer=Product.objects.filter(category='moisturizer',skin_type__name__iexact=skin).first()
+		routine['AM'].append(moisturizer)
+		routine['PM'].append(moisturizer)
+
+	if Product.objects.filter(tags__name__icontains='spf',skin_type__name__iexact=skin).exists():
+		sunscreen=Product.objects.filter(tags__name__icontains='spf',skin_type__name__iexact=skin).first()
+		routine['AM'].append(sunscreen)
+
+	if prefs.get('use_serum'):
+		if 'acne' in concerns:
+			if Product.objects.filter(category='serum',concerns_targeted__name__iexact='acne').exists():
+				serum_bha=Product.objects.filter(category='serum',concerns_targeted__name__iexact='acne').first()
+				routine['PM'].append(serum_bha)
+
+		if 'wrinkles' in concerns or prefs.get('routine_length')!='short':
+			if Product.objects.filter(category='serum',concerns_targeted__name__icontains='wrinkle').exists():
+				serum_retinol=Product.objects.filter(category='serum',concerns_targeted__name__icontains='wrinkle').first()
+				routine['PM'].append(serum_retinol)
+
+		if 'dryness' in concerns:
+			if Product.objects.filter(category='serum',concerns_targeted__name__icontains='dry').exists():
+				serum_hyaluronic=Product.objects.filter(category='serum',concerns_targeted__name__icontains='dry').first()
+				routine['AM'].append(serum_hyaluronic)
+
+		if 'redness' in concerns or skin=='sensitive':
+			if Product.objects.filter(category='serum',concerns_targeted__name__icontains='red').exists():
+				anti_redness=Product.objects.filter(category='serum',concerns_targeted__name__icontains='red').first()
+				routine['AM'].append(anti_redness)
+
+
+
+	length=prefs.get('routine_length')
+
+	if length=='medium':
+		if 'eyebag' in concerns:
+			if Product.objects.filter(category='moisturizer',concerns_targeted__name__icontains='eyebag').exists():
+				eye_cream=Product.objects.filter(category='moisturizer',concerns_targeted__name__icontains='eyebag').first()
+				routine['PM'].append(eye_cream)
+
+	elif length=='long':
+		if Product.objects.filter(tags__name__icontains='sleeping').exists():
+			sleeping_mask=Product.objects.filter(tags__name__icontains='sleeping').first()
+			routine['PM'].append(sleeping_mask)
+
+	return render(request,'quiz/routine.html',{
+		'routine':routine,
+		'skin_type':quiz.skin_type.name,
+		'concerns':quiz.concerns.all(),
+		'preferences':prefs,
+	})

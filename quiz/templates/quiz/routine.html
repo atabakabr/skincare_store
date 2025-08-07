@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container" style="max-width:800px;margin:auto;padding:2rem;">
+  <h2 style="text-align:center;">🧴 روتین پوستی پیشنهادی</h2>
+
+  <p><strong>نوع پوست:</strong> {{ skin_type }}</p>
+  <p><strong>نگرانی‌ها:</strong> 
+    {% for c in concerns %}
+      {{ c.name }}{% if not forloop.last %}, {% endif %}
+    {% endfor %}
+  </p>
+
+  <div style="display:flex;gap:3rem;margin-top:2rem;">
+    <div style="flex:1;">
+      <h3>صبح 🌞</h3>
+      <ol>
+        {% for item in routine.AM %}
+          <li>{{ item }}</li>
+        {% endfor %}
+      </ol>
+    </div>
+    <div style="flex:1;">
+      <h3>شب 🌙</h3>
+      <ol>
+        {% for item in routine.PM %}
+          <li>{{ item }}</li>
+        {% endfor %}
+      </ol>
+    </div>
+  </div>
+</div>
+{% endblock %}
