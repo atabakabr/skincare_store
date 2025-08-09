@@ -2,56 +2,74 @@
 {% load static %}
 
 {% block content %}
-<div class="container" style="max-width: 900px; margin: 0 auto; padding: 2rem 1rem;">
-    <h2 style="text-align: center; margin-bottom: 2rem;">🛒 سبد خرید شما</h2>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<div class="container" style="max-width: 900px; margin: 0 auto; padding: 2rem 1rem; font-family: 'Arial', sans-serif;">
+    <h2 style="text-align: center; margin-bottom: 2rem; color: #2c3e50; font-family: 'Arial', sans-serif;">🛍 سبد خرید شما</h2>
 
     {% if items %}
-        <table style="width: 100%; border-collapse: collapse;">
+        <table style="width: 100%; border-collapse: collapse; box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);">
             <thead>
-                <tr style="border-bottom: 2px solid #ccc;">
-                    <th style="text-align: left;">محصول</th>
-                    <th>تعداد</th>
-                    <th>قیمت واحد</th>
-                    <th>جمع کل</th>
-                    <th>عملیات</th>
+                <tr style="border-bottom: 2px solid #f8f9fa; background-color: #f8f9fa;">
+                    <th style="text-align: left; padding: 12px; color: #2c3e50;">محصول</th>
+                    <th style="text-align: center; padding: 12px; color: #2c3e50;">تعداد</th>
+                    <th style="text-align: center; padding: 12px; color: #2c3e50;">قیمت واحد</th>
+                    <th style="text-align: center; padding: 12px; color: #2c3e50;">جمع کل</th>
+                    <th style="text-align: center; padding: 12px; color: #2c3e50;">عملیات</th>
                 </tr>
             </thead>
             <tbody>
                 {% for item in items %}
-                <tr style="border-bottom: 1px solid #eee;">
-                    <td style="display: flex; align-items: center; gap: 10px;">
-                        <img src="{{ item.image }}" alt="{{ item.name }}" style="width: 50px; height: 50px; object-fit: cover;">
-                        {{ item.name }}
+                <tr style="border-bottom: 1px solid #f8f9fa;">
+                    <td style="display: flex; align-items: center; gap: 10px; padding: 12px;">
+                        <img src="{{ item.image }}" alt="{{ item.name }}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px;">
+                        <span style="font-weight: bold; color: #2c3e50;">{{ item.name }}</span>
                     </td>
-                    <td style="text-align: center;">{{ item.quantity }}</td>
-                    <td style="text-align: center;">{{ item.price }} تومان</td>
-                    <td style="text-align: center;">{{ item.total }} تومان</td>
-                    <td style="text-align: center;">
-                        <form action="{% url 'delete_from_cart' product_id=item.id %}" method="post" style="display: inline;">
-                            {% csrf_token %}
-                            <button type="submit" style="background: crimson; color: white; padding: 5px 10px; border: none; border-radius: 5px;">🗑 حذف</button>
-                        </form>
+                    <td style="text-align: center; padding: 12px; color: #2c3e50;">{{ item.quantity }}</td>
+                    <td style="text-align: center; padding: 12px; color: #2c3e50;">{{ item.price }} تومان</td>
+                    <td style="text-align: center; padding: 12px; color: #2c3e50;">{{ item.total }} تومان</td>
+                    <td style="text-align: center; padding: 12px;">
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                            <form method="POST" action="{% url 'delete_from_cart' item.id %}" style="margin: 0;">
+                                {% csrf_token %}
+                                <button type="submit" style="background: #e74c3c; color: white; border: none; border-radius: 4px; padding: 6px 12px; cursor: pointer;">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                            </form>
+                            <div style="min-width: 40px; text-align: center; font-weight: bold; color: #2c3e50;">
+                                {{ item.quantity }}
+                            </div>
+                            <form method="POST" action="{% url 'add_to_cart' item.id %}" style="margin: 0;">
+                                {% csrf_token %}
+                                <button type="submit" style="background: #2ecc71; color: white; border: none; border-radius: 4px; padding: 6px 12px; cursor: pointer;">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </form>
+                        </div>
                     </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
 
-        <div style="margin-top: 2rem; text-align: right;">
-            <h3>💰 مبلغ کل: {{ total }} تومان</h3>
+        <div style="margin-top: 2rem; text-align: right; padding: 1rem; background-color: #f8f9fa; border-radius: 8px;">
+            <h3 style="color: #2c3e50; font-family: 'Arial', sans-serif;">💰 مبلغ کل: <span style="color: #000000;">{{ total }} تومان</span></h3>
             <form action="{% url 'finalize_order' %}" method="post" style="margin-top: 1rem;">
                 {% csrf_token %}
-                <button type="submit" style="background: #28a745; color: white; padding: 10px 20px; border: none; border-radius: 8px; font-size: 1rem;">
-                    ✅ نهایی کردن سفارش
+                <button type="submit" style="background: #2ecc71; color: white; padding: 12px 24px; border: none; border-radius: 8px; font-size: 1rem; cursor: pointer; font-family: 'Arial', sans-serif;">
+                    <i class="fas fa-check"></i> نهایی کردن سفارش
                 </button>
             </form>
         </div>
 
     {% else %}
-        <p style="text-align: center; font-size: 1.2rem;">سبد خرید شما خالی است 😕</p>
+        <div style="text-align: center; font-size: 1.2rem; color: #2c3e50; margin-top: 2rem;">
+            <i class="fas fa-shopping-cart" style="font-size: 3rem; color: #e74c3c; margin-bottom: 1rem;"></i>
+            <p>سبد خرید شما خالی است 😕</p>
+        </div>
         <div style="text-align: center; margin-top: 2rem;">
-            <a href="{% url 'home' %}" style="text-decoration: none; background: #007bff; color: white; padding: 10px 20px; border-radius: 8px;">
-                🛍 بازگشت به فروشگاه
+            <a href="{% url 'home' %}" style="text-decoration: none; background: #3498db; color: white; padding: 12px 24px; border-radius: 8px; font-family: 'Arial', sans-serif;">
+                <i class="fas fa-store"></i> بازگشت به فروشگاه
             </a>
         </div>
     {% endif %}

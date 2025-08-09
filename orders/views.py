@@ -38,7 +38,7 @@ def delete_from_cart(request, product_id):
         if ord_itm.quantity<=1:
             ord_itm.delete()
         else:
-            print('yes')
+            #print('yes')
             crt_itm.quantity-=1
             ord_itm.quantity-=1
             ord_itm.save()
@@ -89,7 +89,7 @@ def finalize_order(request):
     orderer.save()
     
     for items in ord_items.objects.filter(ord=orderer):
-        print(items.product_id)
+        #print(items.product_id)
         obj,created = browsing_history.objects.update_or_create(
                 user_id=orderer.user_id,
                 product_id=items.product_id,

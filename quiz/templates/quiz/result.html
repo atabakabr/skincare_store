@@ -1,22 +1,38 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="container" style="max-width:700px;margin:auto;padding:2rem;">
-  <h2 style="text-align:center;">✅ نتیجه تشخیص</h2>
+<div class="container" style="max-width: 700px; margin: auto; padding: 2rem; font-family: 'Vazirmatn', sans-serif; background: #fdfdfd; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
 
-  <p><strong>نوع پوست شما:</strong> {{ result.skin_type }}</p>
-  <p><strong>نگرانی‌ها:</strong></p>
-  <ul>
+  <h2 style="text-align: center; color: #28a745; font-weight: bold; margin-bottom: 1.5rem;">✅ نتیجه تشخیص</h2>
+
+  <p style="font-size: 1.1rem;"><strong>نوع پوست شما:</strong> <span style="color: #333;">{{ result.skin_type }}</span></p>
+
+  <p style="font-size: 1.1rem;"><strong>نگرانی‌ها:</strong></p>
+  <ul style="list-style: none; padding: 0; margin-top: 0.5rem;">
     {% for concern in result.concerns %}
-      <li>{{ concern }}</li>
+      <li style="background-color: #f0f4f8; margin-bottom: 0.5rem; padding: 0.6rem 1rem; border-radius: 8px; color: #555;">
+        {{ concern }}
+      </li>
     {% empty %}
-      <li>موردی یافت نشد.</li>
+      <li style="color: #999;">موردی یافت نشد.</li>
     {% endfor %}
   </ul>
 
-  <div style="text-align:center;margin-top:2rem;">
-    <a href="{% url 'second_quiz' %}" class="btn" style="padding:.5rem 1rem;background-color:#007bff;color:white;border-radius:5px;text-decoration:none;">
-      ادامه به مرحله دوم
+  <div style="text-align: center; margin-top: 2rem;">
+    <a href="{% url 'second_quiz' %}" class="btn" style="
+      padding: 0.75rem 1.5rem;
+      background: linear-gradient(135deg, #007bff, #00bcd4);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background 0.3s ease;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      display: inline-block;
+    " onmouseover="this.style.background='linear-gradient(135deg, #0056b3, #0097a7)'" onmouseout="this.style.background='linear-gradient(135deg, #007bff, #00bcd4)'">
+      ادامه به مرحله دوم →
     </a>
   </div>
+
 </div>
 {% endblock %}

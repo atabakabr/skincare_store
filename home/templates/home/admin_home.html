@@ -44,6 +44,10 @@
           {% csrf_token %}
           <button type="submit" class="btn btn-outline-dark rounded-pill ms-2">Logout</button>
         </form>
+        <form method="post" action="{% url 'train_model' %}">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-outline-dark rounded-pill ms-2">train_model</button>
+        </form>
       {% endif %}
     </div>
   </div>

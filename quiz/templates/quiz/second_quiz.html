@@ -1,17 +1,53 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="container" style="max-width:700px;margin:auto;padding:2rem;">
-  <h2 style="text-align:center;">🎯 مرحله دوم: تنظیم اولویت‌ها</h2>
+<div class="container" style="
+  max-width: 700px;
+  margin: auto;
+  padding: 2rem;
+  font-family: 'Vazirmatn', sans-serif;
+  background-color: #fdfdfd;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+">
 
-  <p><strong>نوع پوست:</strong> {{ skin_type }}</p>
-  <p><strong>نگرانی‌ها:</strong> {{ concerns|join:", " }}</p>
+  <h2 style="text-align: center; color: #3b863b; margin-bottom: 1.5rem; font-weight: bold;">
+     مرحله دوم: تنظیم اولویت‌ها
+  </h2>
 
-  <form method="post" action="{% url 'second_quiz' %}">
+  <p style="font-size: 1.1rem; margin-bottom: 0.5rem;">
+    <strong>نوع پوست:</strong>
+    <span style="color: #333;">{{ skin_type }}</span>
+  </p>
+
+  <p style="font-size: 1.1rem; margin-bottom: 1.5rem;">
+    <strong>نگرانی‌ها:</strong>
+    <span style="color: #555;">{{ concerns|join:", " }}</span>
+  </p>
+
+  <form method="post" action="{% url 'second_quiz' %}" style="margin-top: 1rem;">
     {% csrf_token %}
-    {{ form.as_p }}
-    <div style="text-align:center;margin-top:1.5rem;">
-      <button type="submit" style="padding:.5rem 1rem;background-color:#28a745;color:white;border:none;border-radius:5px;">
-        مشاهده روتین
+    <div style="display: flex; flex-direction: column; gap: 1rem;">
+      {{ form.as_p }}
+    </div>
+
+    <div style="text-align: center; margin-top: 2rem;">
+      <button type="submit" style="
+        padding: 0.75rem 1.5rem;
+        background: linear-gradient(135deg, #28a745, #218838);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-weight: bold;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background 0.3s ease, transform 0.2s ease;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      "
+      onmouseover="this.style.background='linear-gradient(135deg, #1e7e34, #18632a)'"
+      onmouseout="this.style.background='linear-gradient(135deg, #28a745, #218838)'"
+      onmousedown="this.style.transform='scale(0.97)'"
+      onmouseup="this.style.transform='scale(1)'">
+         مشاهده روتین
       </button>
     </div>
   </form>

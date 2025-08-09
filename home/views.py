@@ -3,13 +3,15 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 from .forms import ProductForm
 from products.models import Product,Wishlist
-
+from recommendation.views import recommend_prods_content_based
 #@login_required
 def home_page(request):
     if request.user.is_staff:
         return redirect('admin_home')
+    prod_ids=recommend_prods_content_based(request)
     products=Product.objects.all()
-    return render(request,'home/home.html',{'products': products})
+    recommended_products=Product.objects.filter(id__in=prod_ids) if prod_ids else []
+    return render(request,'home/home.html',{'products': products,'recommended_products': recommended_products})
 
 
 @staff_member_required

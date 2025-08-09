@@ -1,14 +1,62 @@
 {% extends 'base.html' %}
+{% load static %}
+
 {% block content %}
-<div class="quiz-container" style="max-width:700px;margin:auto;padding:2rem;">
-  <h2 style="text-align:center;margin-bottom:1.5rem;">🔍 مرحله اول: تشخیص نوع پوست و نگرانی‌ها</h2>
-  <form method="post" action="{% url 'get_quiz' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<style>
+  input[type="range"] {
+    width: 100%;
+    height: 10px;
+    background: #d3d3d3;
+    border-radius: 5px;
+    margin-top: 10px;
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    background: #28a745;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+
+  input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: #28a745;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+
+  input[type="range"]::-webkit-slider-thumb:hover {
+    background: #218838;
+  }
+
+  input[type="range"]::-moz-range-thumb:hover {
+    background: #218838;
+  }
+
+  input[type="range"]::-webkit-slider-thumb:active {
+    background: #1e7e34;
+  }
+
+  input[type="range"]::-moz-range-thumb:active {
+    background: #1e7e34;
+  }
+</style>
+
+<div class="quiz-container" style="max-width: 700px; margin: auto; padding: 2rem; font-family: 'Arial', sans-serif; background-color: #f9f9f9; border-radius: 10px; box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);">
+  <h2 style="text-align: center; margin-bottom: 1.5rem; color: #2c3e50; font-family: 'Arial', sans-serif;">🔍 مرحله اول: تشخیص نوع پوست و نگرانی‌ها</h2>
+  <form method="post" action="{% url 'get_quiz' %}" style="background-color: white; padding: 2rem; border-radius: 10px;">
     {% csrf_token %}
     {% for field in form %}
-      <div style="margin-bottom:1.2rem;">
-        <label style="font-weight:bold;">{{ field.label }}</label>
+      <div style="margin-bottom: 1.5rem; padding: 1rem; background-color: #f9f9f9; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <label style="font-weight: bold; color: #2c3e50;">{{ field.label }}</label>
+          <span style="color: #2c3e50;">مقدار: <span id="val{{ forloop.counter }}" style="font-weight: bold; color: #28a745;">{{ field.value|default:5 }}</span></span>
+        </div>
         {{ field }}
-        <span style="float:right;">مقدار: <span id="val{{ forloop.counter }}">5</span></span>
         <script>
           document.getElementById("{{ field.id_for_label }}").addEventListener("input", function() {
             document.getElementById("val{{ forloop.counter }}").innerText = this.value;
@@ -16,9 +64,9 @@
         </script>
       </div>
     {% endfor %}
-    <div style="text-align:center;">
-      <button type="submit" style="padding:.5rem 1rem;background-color:#28a745;color:white;border:none;border-radius:5px;">
-        ارسال و ادامه
+    <div style="text-align: center; margin-top: 2rem;">
+      <button type="submit" style="padding: 0.75rem 1.5rem; background-color: #28a745; color: white; border: none; border-radius: 5px; font-size: 1rem; cursor: pointer; transition: background-color 0.3s;">
+        <i class="fas fa-paper-plane"></i> ارسال و ادامه
       </button>
     </div>
   </form>

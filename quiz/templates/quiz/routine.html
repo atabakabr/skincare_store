@@ -1,29 +1,65 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="container" style="max-width:800px;margin:auto;padding:2rem;">
-  <h2 style="text-align:center;">🧴 روتین پوستی پیشنهادی</h2>
+<div class="container" style="
+  max-width: 800px;
+  margin: auto;
+  padding: 2rem;
+  font-family: 'Vazirmatn', sans-serif;
+  background-color: #fefefe;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+">
 
-  <p><strong>نوع پوست:</strong> {{ skin_type }}</p>
-  <p><strong>نگرانی‌ها:</strong> 
-    {% for c in concerns %}
-      {{ c.name }}{% if not forloop.last %}, {% endif %}
-    {% endfor %}
+  <h2 style="text-align: center; color: #007bff; margin-bottom: 1.5rem;">🧴 روتین پوستی پیشنهادی</h2>
+
+  <p style="font-size: 1.1rem; margin-bottom: 0.5rem;">
+    <strong>نوع پوست:</strong> <span style="color: #333;">{{ skin_type }}</span>
   </p>
 
-  <div style="display:flex;gap:3rem;margin-top:2rem;">
-    <div style="flex:1;">
-      <h3>صبح 🌞</h3>
-      <ol>
+  <p style="font-size: 1.1rem; margin-bottom: 1.5rem;">
+    <strong>نگرانی‌ها:</strong>
+    <span style="color: #555;">
+      {% for c in concerns %}
+        {{ c.name }}{% if not forloop.last %}, {% endif %}
+      {% endfor %}
+    </span>
+  </p>
+
+  <div style="
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    margin-top: 2rem;
+    justify-content: space-between;
+  ">
+    <!-- صبح -->
+    <div style="
+      flex: 1 1 300px;
+      background-color: #e6f2ff;
+      padding: 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0, 123, 255, 0.1);
+    ">
+      <h3 style="color: #0056b3; margin-bottom: 1rem;">🌞 روتین صبح</h3>
+      <ol style="padding-left: 1.2rem; color: #333;">
         {% for item in routine.AM %}
-          <li>{{ item }}</li>
+          <li style="margin-bottom: .5rem;">{{ item }}</li>
         {% endfor %}
       </ol>
     </div>
-    <div style="flex:1;">
-      <h3>شب 🌙</h3>
-      <ol>
+
+    <!-- شب -->
+    <div style="
+      flex: 1 1 300px;
+      background-color: #f3e8ff;
+      padding: 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(111, 66, 193, 0.1);
+    ">
+      <h3 style="color: #6f42c1; margin-bottom: 1rem;">🌙 روتین شب</h3>
+      <ol style="padding-left: 1.2rem; color: #333;">
         {% for item in routine.PM %}
-          <li>{{ item }}</li>
+          <li style="margin-bottom: .5rem;">{{ item }}</li>
         {% endfor %}
       </ol>
     </div>

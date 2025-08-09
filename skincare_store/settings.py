@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'search',
     'orders',
     'quiz',
+    'recommendation',
     
 ]
 
