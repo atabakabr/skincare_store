@@ -8,7 +8,7 @@ class ProductForm(forms.ModelForm):
             'name', 'brand', 'category',
             'skin_type', 'concerns_targeted',
             'ingredients', 'price',
-            'image_url', 'tags','quantity',
+            'image_url', 'tags','quantity','image',
         ]
         widgets = {
             'skin_type': forms.CheckboxSelectMultiple(),

@@ -18,12 +18,12 @@ def home_page(request):
 def admin_home(request):
     products=Product.objects.all()
     if request.method=='POST':
-        form=ProductForm(request.POST)
+        form=ProductForm(request.POST,request.FILES)
         if form.is_valid():
             form.save()
             return redirect('admin_home')
     else:
-        form=ProductForm()
+        form=ProductForm(request.POST, request.FILES)
 
     context={
         'form':form,

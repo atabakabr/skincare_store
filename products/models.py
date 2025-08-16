@@ -42,6 +42,7 @@ class Product(models.Model):
     rating=models.FloatField(default=0.0)
     rate_quantity=models.IntegerField(default=0)
     image_url=models.URLField(max_length=500,blank=True)
+    image=models.ImageField(upload_to='products/',null=True,blank=True)
     quantity=models.PositiveIntegerField(default=0)
     sold_quantity=models.PositiveIntegerField(default=0)
 

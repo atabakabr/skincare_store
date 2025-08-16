@@ -7,8 +7,8 @@
     <div style="max-width: 1000px; margin: 3rem auto; display: flex; gap: 2rem; flex-wrap: wrap; background: #fff; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); padding: 2rem;">
       
       <div style="flex: 1 1 300px;">
-        {% if product.image_url %}
-          <img src="{{ product.image_url }}" alt="{{ product.name }}" style="width: 100%; height: auto; border-radius: 10px; object-fit: contain;" />
+        {% if product.image.url %}
+          <img src="{{ product.image.url }}" alt="{{ product.name }}" style="width: 100%; height: auto; border-radius: 10px; object-fit: contain;" />
         {% else %}
           <div style="width: 100%; height: 300px; background: #eee; display: flex; justify-content: center; align-items: center; border-radius: 10px;">
             No Image Available
