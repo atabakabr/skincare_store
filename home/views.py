@@ -49,7 +49,7 @@ def edit_product(request,product_id):
         form=ProductForm(request.POST,request.FILES,instance=product)
         if form.is_valid():
             form.save()
-            return redirect('admin-home')
+            return redirect('admin_home')
     else:
         form=ProductForm(instance=product)
 

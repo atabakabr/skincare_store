@@ -37,15 +37,21 @@ def get_info():
     ).reset_index()
 
     df_wide.columns.name=None
-    products=Product.objects.all().values('id','rating','rate_quantity','sold_quantity')
+    products=Product.objects.all().values('id','rating','rate_quantity','sold_quantity','category')
     prod_df=pd.DataFrame(list(products)).rename(columns={'id':'product_id'})
     final_df=pd.merge(df_wide,prod_df,on='product_id',how='left')
+
+    #instead of one hot
+    final_df['category']=final_df['category'].fillna('unknown')
+    category_map={'cleaner':0,'serum': 1,'moisturizer':2,'unknown':3}
+    final_df['category_encoded']=final_df['category'].map(category_map)
+
     return(final_df)
 
 def train_model(request):
     final_df=get_info()
     
-    feature_cols=["view","rating","rate_quantity","sold_quantity","cart","wishlist"]
+    feature_cols=["view","rating","rate_quantity","sold_quantity","cart","wishlist",'category_encoded']
     input_features=final_df[feature_cols].fillna(0).values
     input_dim=input_features.shape[1]
         
@@ -72,7 +78,7 @@ def train_model(request):
 
 
 def recommend_prods_content_based(request):
-    feature_cols=["view", "rating", "rate_quantity", "sold_quantity", "cart", "wishlist"]
+    feature_cols=["view", "rating", "rate_quantity", "sold_quantity", "cart", "wishlist",'category_encoded']
     final_df=get_info()
     input_features=final_df[feature_cols].fillna(0).values
 
@@ -82,7 +88,7 @@ def recommend_prods_content_based(request):
     user_id=request.user.id
     user_df=final_df[final_df['user_id']==user_id]
 
-    feature_cols=["view", "rating", "rate_quantity", "sold_quantity", "cart", "wishlist"]
+    feature_cols=["view", "rating", "rate_quantity", "sold_quantity", "cart", "wishlist",'category_encoded']
     X=user_df[feature_cols].fillna(0).values
     X_tensor=torch.tensor(X,dtype=torch.float32)
 
