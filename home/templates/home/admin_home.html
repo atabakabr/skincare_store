@@ -5,115 +5,167 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>پنل ادمین - مدیریت محصولات</title>
 
-
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet" />
-
   <style>
     body {
-      background-color: #83c091;
-      font-family: Tahoma, sans-serif;
+      background-color: #e6f4ea;
+      font-family: "Tahoma", sans-serif;
       min-height: 100vh;
-      padding: 20px;
+    }
+    .navbar {
+      background-color: #fff !important;
+      border-bottom: 2px solid #cde9d9;
     }
     .admin-container {
-      background-color: #fff;
       padding: 25px;
-      border-radius: 10px;
-      box-shadow: 0 4px 12px rgb(0 0 0 / 0.1);
     }
-    h3 {
-      margin-bottom: 20px;
+    .stats-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      transition: 0.3s;
     }
-    table th, table td {
+    .stats-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+    }
+    .form-box {
+      background: #fff;
+      border-radius: 12px;
+      padding: 25px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+    .form-box button {
+      border-radius: 30px;
+      font-weight: bold;
+    }
+    .table-box {
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      max-height: 450px;
+      overflow-y: auto;
+    }
+    table th {
+      background: #83c091;
+      color: white;
+      text-align: center;
+    }
+    table td {
       vertical-align: middle !important;
+      text-align: center;
     }
   </style>
 </head>
 <body>
 
-
-<nav class="navbar navbar-expand-lg bg-white shadow mb-4 rounded px-4 py-2 mt-4">
+<nav class="navbar navbar-expand-lg shadow-sm px-4 py-2">
   <div class="container-fluid">
-
-    <a class="navbar-brand" href="#">🍃 SkinCare</a>
+    <a class="navbar-brand fw-bold text-success" href="#">🍃 SkinCare Admin</a>
 
     <div class="d-flex ms-auto">
       {% if user.is_authenticated %}
-        
+        <form method="post" action="{% url 'train_model' %}" class="me-2">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-outline-success rounded-pill">Train Model</button>
+        </form>
         <form method="post" action="{% url 'logout' %}">
           {% csrf_token %}
-          <button type="submit" class="btn btn-outline-dark rounded-pill ms-2">Logout</button>
-        </form>
-        <form method="post" action="{% url 'train_model' %}">
-          {% csrf_token %}
-          <button type="submit" class="btn btn-outline-dark rounded-pill ms-2">train_model</button>
+          <button type="submit" class="btn btn-outline-danger rounded-pill">Logout</button>
         </form>
       {% endif %}
     </div>
   </div>
 </nav>
 
-
 <div class="container admin-container">
 
+
+  <div class="row mb-4">
+    <div class="col-md-4 mb-3">
+      <div class="stats-card text-center">
+        <h5 class="text-muted">👥 تعداد کاربران</h5>
+        <h3 class="fw-bold text-success">{{ users_count }}</h3>
+      </div>
+    </div>
+    <div class="col-md-4 mb-3">
+      <div class="stats-card text-center">
+        <h5 class="text-muted">👁️ مجموع بازدید محصولات</h5>
+        <h3 class="fw-bold text-success">{{ total_views }}</h3>
+      </div>
+    </div>
+    <div class="col-md-4 mb-3">
+      <div class="stats-card text-center">
+        <h5 class="text-muted">💰 میزان فروش</h5>
+        <h3 class="fw-bold text-success">{{ total_sales }}</h3>
+      </div>
+    </div>
+  </div>
+
   <div class="row">
-
-    <div class="col-md-5">
-      <h3>افزودن محصول جدید</h3>
-      <form method="POST" class="mb-4" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-success w-100">افزودن محصول</button>
-      </form>
+    <div class="col-md-4">
+      <div class="form-box">
+        <h4 class="mb-3">➕ افزودن محصول جدید</h4>
+        <form method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+          {{ form.as_p }}
+          <button type="submit" class="btn btn-success w-100">افزودن</button>
+        </form>
+      </div>
     </div>
-    <div class="col-md-7">
-      <h3>لیست محصولات</h3>
-      <table class="table table-bordered table-striped">
-        <thead>
-          <tr>
-            <th>نام</th>
-            <th>برند</th>
-            <th>دسته</th>
-            <th>قیمت</th>
-            <th>امتیاز</th>
-            <th>نصویر</th>
-            <th>عملیات</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for product in products %}
+
+    <div class="col-md-8">
+      <div class="table-box">
+        <h4 class="mb-3">📦 لیست محصولات</h4>
+        <table class="table table-bordered table-hover">
+          <thead>
             <tr>
-              <td>{{ product.name }}</td>
-              <td>{{ product.brand }}</td>
-              <td>{{ product.category }}</td>
-              <td>{{ product.price }}</td>
-              <td>{{ product.rating }}</td>
-              <td>
+              <th>نام</th>
+              <th>برند</th>
+              <th>دسته</th>
+              <th>قیمت</th>
+              <th>امتیاز</th>
+              <th>تصویر</th>
+              <th>ویرایش</th>
+              <th>حذف</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for product in products %}
+              <tr>
+                <td>{{ product.name }}</td>
+                <td>{{ product.brand }}</td>
+                <td>{{ product.category }}</td>
+                <td>{{ product.price }}</td>
+                <td>{{ product.rating }}</td>
+                <td>
                   {% if product.image %}
-                    <img src="{{ product.image.url }}" alt="{{ product.name }}" style="height:50px;">
+                    <img src="{{ product.image.url }}" style="height:50px;" class="rounded">
                   {% elif product.image_url %}
-                    <img src="{{ product.image_url }}" alt="{{ product.name }}" style="height:50px;">
-
+                    <img src="{{ product.image_url }}" style="height:50px;" class="rounded">
                   {% else %}
-                    No image
+                    ❌
                   {% endif %}
-              </td>
-              <td>
-                <form method="POST" action="{% url 'product_delete' product.id %}" style="display:inline;">
-                  {% csrf_token %}
-                  <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('آیا مطمئن هستید؟')">حذف</button>
-                </form>
-              </td>
-            </tr>
-          {% empty %}
-            <tr>
-              <td colspan="6" class="text-center">محصولی وجود ندارد.</td>
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+                </td>
+                <td>
+                  <a href="{% url 'edit_product' product.id %}" class="btn btn-warning btn-sm">✏️</a>
+                </td>
+                <td>
+                  <form method="POST" action="{% url 'product_delete' product.id %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('مطمئنید؟')">🗑️</button>
+                  </form>
+                </td>
+              </tr>
+            {% empty %}
+              <tr><td colspan="8" class="text-center">هیچ محصولی موجود نیست.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
     </div>
-
   </div>
 
 </div>
@@ -121,6 +173,3 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-
-
-
