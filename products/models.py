@@ -1,6 +1,7 @@
 import uuid
 from django.db import models
 from accounts.models import CustomUser
+from django.utils import timezone
 
 class SkinType(models.Model):
     name=models.CharField(max_length=50)
@@ -45,6 +46,7 @@ class Product(models.Model):
     image=models.ImageField(upload_to='products/',null=True,blank=True)
     quantity=models.PositiveIntegerField(default=0)
     sold_quantity=models.PositiveIntegerField(default=0)
+    created_at=models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.name} by {self.brand}"

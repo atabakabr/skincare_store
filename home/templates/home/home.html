@@ -1,156 +1,179 @@
 {% extends 'base.html' %}
 
-{% block title %}صفحه اصلی - لیست محصولات{% endblock %}
+{% block title %}صفحه اصلی - محصولات{% endblock %}
 
 {% block content %}
-  {% if recommended_products %}
-    <section class="recommendation-section">
-      <h2 class="section-title">محصولات پیشنهادی </h2>
-      <div class="product-carousel" id="recommendation-carousel">
-        {% for product in recommended_products %}
-          <div class="product-card">
-            {% if product.image %}
-              <img src="{{ product.image.url }}" alt="{{ product.name }}">
-            {% elif product.image_url %}
-              <img src="{{ product.image_url }}" alt="{{ product.name }}">
-            {% else %}
-              <div style="width: 100%; height: 180px; background: #eee; display: flex; justify-content: center; align-items: center; color: #999; border-radius: 8px; margin-bottom: 1rem;">
-                No Image
-              </div>
-            {% endif %}
-            <div class="product-info">
-              <h3>{{ product.name }}</h3>
-              <p class="price">{{ product.price }} USD</p>
-              <p class="rating">⭐ {{ product.rating }} ({{ product.rate_quantity }})</p>
-            </div>
-          </div>
-        {% endfor %}
-      </div>
-      <button class="carousel-btn prev" onclick="scrollCarousel(-1)">&#10094;</button>
-      <button class="carousel-btn next" onclick="scrollCarousel(1)">&#10095;</button>
-    </section>
-    
-  {% endif %}
 
-  <div style="max-width:1200px; margin: 2rem auto; display: flex; flex-wrap: wrap; gap: 1.5rem; justify-content: center;">
-    {% for product in products %}
-      <div style="background: white; border-radius: 12px; box-shadow: 0 2px 8px rgb(0 0 0 / 0.1); width: 220px; padding: 1rem; display: flex; flex-direction: column; align-items: center; text-align: center;">
+{% if recommended_products %}
+<section class="highlight-section recommended-section">
+  <h2 class="section-title">محصولات پیشنهادی</h2>
+  <div class="product-carousel" id="recommended-carousel">
+    {% for product in recommended_products %}
+      <div class="product-card">
         {% if product.image %}
-            <img src="{{ product.image.url }}" alt="{{ product.name }}" style="width: 100%; height: 180px; object-fit: contain; border-radius: 8px; margin-bottom: 1rem;" />
+          <img src="{{ product.image.url }}" alt="{{ product.name }}">
         {% elif product.image_url %}
-            <img src="{{ product.image_url }}" alt="{{ product.name }}" style="width: 100%; height: 180px; object-fit: contain; border-radius: 8px; margin-bottom: 1rem;" />
-          
+          <img src="{{ product.image_url }}" alt="{{ product.name }}">
         {% else %}
-          <div style="width: 100%; height: 180px; background: #eee; display: flex; justify-content: center; align-items: center; color: #999; border-radius: 8px; margin-bottom: 1rem;">
-            No Image
-          </div>
+          <div class="no-image">No Image</div>
         {% endif %}
-        <a href="{% url 'view_product' product.id %}" style="text-decoration: none; font-size: 1.1rem; margin-bottom: 0.3rem; color: #222;">{{ product.name }}</a>
-        <p style="margin: 0.2rem 0; font-weight: 600; color: #555;">Brand: {{ product.brand }}</p>
-        <p style="margin: 0.2rem 0; font-weight: 700; color: #222;">Price: {{ product.price }} </p>
+        <div class="product-info">
+          <h3>{{ product.name }}</h3>
+          <p class="price">{{ product.price }} USD</p>
+          <p class="rating">⭐ {{ product.rating }} ({{ product.rate_quantity }})</p>
+        </div>
       </div>
-    {% empty %}
-      <p style="text-align: center; color: #666;">محصولی وجود ندارد.</p>
     {% endfor %}
   </div>
+  <button class="carousel-btn prev" onclick="scrollCarousel('recommended', -1)">&#10094;</button>
+  <button class="carousel-btn next" onclick="scrollCarousel('recommended', 1)">&#10095;</button>
+</section>
+{% endif %}
+
+{% if newest %}
+<section class="highlight-section newest-section">
+  <h2 class="section-title">جدیدترین محصولات</h2>
+  <div class="product-grid">
+    {% for product in newest|slice:":10" %}
+      <div class="product-card">
+        {% if product.image %}
+          <img src="{{ product.image.url }}" alt="{{ product.name }}">
+        {% elif product.image_url %}
+          <img src="{{ product.image_url }}" alt="{{ product.name }}">
+        {% else %}
+          <div class="no-image">No Image</div>
+        {% endif %}
+        <div class="product-info">
+          <h3>{{ product.name }}</h3>
+          <p class="price">{{ product.price }} USD</p>
+          <p class="rating">⭐ {{ product.rating }}</p>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+{% if most_sales %}
+<section class="highlight-section sales-section">
+  <h2 class="section-title">پرفروش‌ترین محصولات</h2>
+  <div class="product-grid">
+    {% for product in most_sales|slice:":10" %}
+      <div class="product-card">
+        {% if product.image %}
+          <img src="{{ product.image.url }}" alt="{{ product.name }}">
+        {% elif product.image_url %}
+          <img src="{{ product.image_url }}" alt="{{ product.name }}">
+        {% else %}
+          <div class="no-image">No Image</div>
+        {% endif %}
+        <div class="product-info">
+          <h3>{{ product.name }}</h3>
+          <p class="price">{{ product.price }} USD</p>
+          <p class="rating">⭐ {{ product.rating }}</p>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<style>
+
+.highlight-section {
+  padding: 20px;
+  margin: 20px auto;
+  border-radius: 12px;
+  max-width: 1200px;
+}
 
 
+.recommended-section { background-color: #ffffff; }
+.newest-section { background-color: #d9f0e1; }
+.sales-section { background-color: #e6f3e9; }
+
+.section-title {
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
 
 
+.product-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+}
 
-  <style>
-  .recommendation-section {
-    position: relative;
-    padding: 20px;
-    background: #fff;
-    margin: 20px 0;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-  }
 
-  .section-title {
-    font-size: 2rem;
-    font-weight: bold;
-    margin-bottom: 15px;
-    padding-left: 5px;
-  }
+.product-card {
+  flex: 0 0 220px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  text-align: center;
+  padding-bottom: 10px;
+}
 
-  .product-carousel {
-    display: flex;
-    overflow-x: auto;
-    scroll-behavior: smooth;
-    gap: 16px;
-  }
+.product-card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+}
 
-  .product-carousel::-webkit-scrollbar {
-    display: none;
-  }
+.product-info h3 { font-size: 1rem; margin: 5px 0; }
+.price { color: #2e7d32; font-weight: bold; }
+.rating { color: #ff9800; font-size: 0.9rem; }
 
-  .product-card {
-    flex: 0 0 200px;
-    background: #fafafa;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    overflow: hidden;
-    text-align: center;
-    padding-bottom: 10px;
-  }
+.no-image {
+  width: 100%;
+  height: 180px;
+  background: #eee;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #999;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+}
 
-  .product-card img {
-    width: 100%;
-    height: 180px;
-    object-fit: cover;
-  }
 
-  .product-info {
-    padding: 10px;
-  }
+.product-carousel {
+  display: flex;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  gap: 16px;
+}
 
-  .product-info h3 {
-    font-size: 1rem;
-    margin: 5px 0;
-  }
+.product-carousel::-webkit-scrollbar { display: none; }
 
-  .price {
-    color: #e53935;
-    font-weight: bold;
-  }
+.carousel-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255,255,255,0.9);
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+  padding: 0px 10px;
+  border-radius: 100%;
+}
 
-  .rating {
-    color: #ff9800;
-    font-size: 0.9rem;
-  }
+.carousel-btn.prev { left: 150px; }
+.carousel-btn.next { right: 150px; }
 
-  .carousel-btn {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background: rgba(255,255,255,0.9);
-    border: none;
-    font-size: 2rem;
-    cursor: pointer;
-    padding: 1px 10px;
-    border-radius: 100%;
-    /*box-shadow: 0 2px 8px rgba(0,0,0,0.2);*/
-  }
+.carousel-btn:hover { background: white; }
+</style>
 
-  .carousel-btn.prev { left: 5px; }
-  .carousel-btn.next { right: 5px; }
-
-  .carousel-btn:hover {
-    background: white;
-  }
-  </style>
-
-  <script>
-  function scrollCarousel(direction) {
-    const carousel = document.getElementById('recommendation-carousel');
-    const cardWidth = carousel.querySelector('.product-card').offsetWidth + 16;
-    carousel.scrollBy({
-      left: direction * cardWidth,
-      behavior: 'smooth'
-    });
-  }
-  </script>
+<script>
+function scrollCarousel(carouselId, direction) {
+  const carousel = document.getElementById(carouselId + '-carousel');
+  const cardWidth = carousel.querySelector('.product-card').offsetWidth + 16;
+  carousel.scrollBy({ left: direction * cardWidth, behavior: 'smooth' });
+}
+</script>
 
 {% endblock %}
