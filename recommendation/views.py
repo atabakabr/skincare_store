@@ -7,7 +7,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from products.models import Product
 from search.models import browsing_history
-
+from sklearn.metrics.pairwise import cosine_similarity
 
 class RecommenderMLP(nn.Module):
     def __init__(self,input_dim):
@@ -102,3 +102,29 @@ def recommend_prods_content_based(request):
     prod_ids=recommendations['product_id'].tolist()
     prod_ids=[str(pid) for pid in recommendations['product_id']]
     return prod_ids
+
+def recommend_prods_collab(request):
+    final_df=get_info()
+
+    final_df['score']=final_df[['cart','wishlist']].sum(axis=1)
+
+    user_item=final_df.pivot_table(index='user_id',columns='product_id',values='score',fill_value=0)
+
+    if request.user.id not in user_item.index:
+        return []
+
+    user_sim=cosine_similarity(user_item)
+    user_sim_df=pd.DataFrame(user_sim,index=user_item.index,columns=user_item.index)
+
+    curr_user=request.user.id
+    similar_users=user_sim_df[curr_user].drop(curr_user)
+    similar_users=similar_users[similar_users>0].sort_values(ascending=False)
+
+    unseen_items=user_item.loc[curr_user][user_item.loc[curr_user]==0].index
+    if len(unseen_items)==0:
+        return []
+    #transpose and weighting
+    scores=user_item.loc[similar_users.index,unseen_items].T.dot(similar_users)
+    
+    prod_ids=scores.sort_values(ascending=False).head(8).index.tolist()
+    return [str(pid) for pid in prod_ids]
