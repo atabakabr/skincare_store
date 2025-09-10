@@ -52,14 +52,14 @@ def rate_product(request,product_id):
 
 
 
-    return redirect('view_product', product_id=product.id)
+    return redirect('view_product',product_id=product.id)
 
 
 def add_wishlist(request,product_id):
     if request.user.is_authenticated:
-        product = get_object_or_404(Product, id=product_id)
-        Wishlist.objects.get_or_create(user=request.user, product=product)
-        obj,created = browsing_history.objects.update_or_create(
+        product=get_object_or_404(Product,id=product_id)
+        Wishlist.objects.get_or_create(user=request.user,product=product)
+        obj,created=browsing_history.objects.update_or_create(
             user_id=request.user,
             product_id=product,
             interaction_type='wishlist',
@@ -75,7 +75,7 @@ def delete_from_wishlist(request,product_id):
         itm=Wishlist.objects.get(user=request.user,product=prod)
         itm.delete()
 
-        obj,created = browsing_history.objects.update_or_create(
+        obj,created=browsing_history.objects.update_or_create(
             user_id=request.user,
             product_id=prod,
             interaction_type='wishlist',
