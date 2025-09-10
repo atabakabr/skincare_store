@@ -1,23 +1,27 @@
 from django.shortcuts import redirect
 import pandas as pd
 import numpy as np
-from sklearn.preprocessing import OneHotEncoder
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 from products.models import Product
 from search.models import browsing_history
 from sklearn.metrics.pairwise import cosine_similarity
 
-class RecommenderMLP(nn.Module):
+
+
+class Recommender(nn.Module):
     def __init__(self,input_dim):
         super().__init__()
         self.net=nn.Sequential(
-            nn.Linear(input_dim, 16),
+            nn.Linear(input_dim, 32),
             nn.ReLU(),
-            nn.Linear(16,8),
+            nn.Dropout(0.3),
+            nn.Linear(32, 16),
             nn.ReLU(),
-            nn.Linear(8,1),
+            nn.Dropout(0.3),
+            nn.Linear(16, 8),
+            nn.ReLU(),
+            nn.Linear(8, 1),
             nn.Sigmoid()
         )
     
@@ -60,11 +64,11 @@ def train_model(request):
     Y=torch.tensor(y, dtype=torch.float32).unsqueeze(1)
 
 
-    model=RecommenderMLP(input_dim)
+    model=Recommender(input_dim)
 
     loss_fn=nn.BCELoss()
     optimizer=torch.optim.Adam(model.parameters(), lr=0.01)
-    for i in range(100):
+    for i in range(500):
         model.train()
         optimizer.zero_grad()
         outputs=model(X)
@@ -82,7 +86,7 @@ def recommend_prods_content_based(request):
     final_df=get_info()
     input_features=final_df[feature_cols].fillna(0).values
 
-    model=RecommenderMLP(input_features.shape[1])
+    model=Recommender(input_features.shape[1])
     model.load_state_dict(torch.load("model.pt"))
     model.eval()
     user_id=request.user.id
@@ -102,6 +106,7 @@ def recommend_prods_content_based(request):
     prod_ids=recommendations['product_id'].tolist()
     prod_ids=[str(pid) for pid in recommendations['product_id']]
     return prod_ids
+    
 
 def recommend_prods_collab(request):
     final_df=get_info()
