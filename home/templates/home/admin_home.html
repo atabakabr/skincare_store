@@ -67,10 +67,6 @@
 
     <div class="d-flex ms-auto">
       {% if user.is_authenticated %}
-        <form method="post" action="{% url 'train_model' %}" class="me-2">
-          {% csrf_token %}
-          <button type="submit" class="btn btn-outline-success rounded-pill">Train Model</button>
-        </form>
         <form method="post" action="{% url 'logout' %}">
           {% csrf_token %}
           <button type="submit" class="btn btn-outline-danger rounded-pill">Logout</button>

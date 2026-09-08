@@ -24,6 +24,7 @@ def home_page(request):
         recommended_products+=recommended_products_collab[:5]
     most_sales=Product.objects.filter(quantity__gt=0).order_by('-sold_quantity')[:8]
     newest=Product.objects.order_by('-created_at')[:8]
+    print(recommended_products)
     return render(request,'home/home.html',{'products': products,'recommended_products': recommended_products[:10],'newest':newest,'most_sales':most_sales})
 
 
