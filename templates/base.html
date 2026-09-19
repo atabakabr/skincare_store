@@ -1,157 +1,497 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <title>{% block title %}Skincare Store{% endblock %}</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
-  <style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-    body {
-      font-family: Arial, sans-serif;
-      background: #f8f9fa;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-    nav {
-      background-color: #88d99b;
-      color: white;
-      padding: 0.75rem 1.5rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    nav a.navbar-brand {
-      color: white;
-      text-decoration: none;
-      font-weight: bold;
-      font-size: 1.5rem;
-    }
-    form.search-form {
-      display: flex;
-      gap: 0.5rem;
-      flex-grow: 1;
-      max-width: 400px;
-      margin: 0 1rem;
-    }
-    form.search-form input[type="search"] {
-      flex-grow: 1;
-      padding: 0.5rem 1rem;
-      border-radius: 25px;
-      border: none;
-      outline: none;
-      font-size: 1rem;
-    }
-    form.search-form button {
-      background-color: white;
-      color: #88d99b;
-      border: none;
-      border-radius: 25px;
-      padding: 0 1.5rem;
-      cursor: pointer;
-      font-weight: bold;
-      transition: background-color 0.3s ease;
-    }
-    form.search-form button:hover {
-      background-color: #e6e6e6;
-    }
-    .auth-buttons {
-      display: flex;
-      gap: 0.75rem;
-      align-items: center;
-    }
-    .auth-buttons form,
-    .auth-buttons a {
-      color: white;
-      background: transparent;
-      border: 2px solid white;
-      border-radius: 25px;
-      padding: 0.3rem 1rem;
-      text-decoration: none;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-    .auth-buttons form button {
-      background: transparent;
-      border: none;
-      color: white;
-      font-weight: 600;
-      cursor: pointer;
-      padding: 0;
-    }
-    .auth-buttons form button:hover,
-    .auth-buttons a:hover {
-      background-color: white;
-      color: #88d99b;
-    }
-    main.container {
-      flex-grow: 1;
-      padding: 2rem 1rem;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-    footer {
-      background-color: #88d99b;
-      color: white;
-      text-align: center;
-      padding: 1rem 0;
-      font-size: 0.9rem;
-      margin-top: auto;
-    }
-  </style>
+    <title>{% block title %}Skincare Store{% endblock %}</title>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #fffafc;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            color: #4a3f45;
+        }
+
+        nav {
+          direction: rtl;
+
+          position: sticky;
+          top: 0;
+          z-index: 100;
+
+          min-height: 82px;
+          padding: 1rem 2rem;
+
+          display: flex;
+          align-items: center;
+          gap: 1.2rem;
+
+          color: white;
+
+          background: transparent;
+
+          box-shadow: none;
+      }
+
+nav::before {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: -20px;
+    right: -20px;
+    bottom: -75px;
+
+    background: linear-gradient(
+        to bottom,
+        #b9dfc2 0%,
+        #b9dfc2 45%,
+        rgba(185, 223, 194, 0.98) 55%,
+        rgba(185, 223, 194, 0.82) 63%,
+        rgba(185, 223, 194, 0.50) 70%,
+        rgba(185, 223, 194, 0.18) 85%,
+        rgba(185, 223, 194, 0) 100%
+    );
+
+    pointer-events: none;
+    z-index: -1;
+}
+        nav::after {
+            content: "";
+
+            position: absolute;
+
+            left: -15px;
+            right: -15px;
+
+            top: 100%;
+
+            height: 100px;
+
+            background: linear-gradient(
+                to bottom,
+                rgba(215, 234, 215, 0.90) 0%,
+                rgba(215, 234, 215, 0.72) 15%,
+                rgba(215, 234, 215, 0.48) 35%,
+                rgba(215, 234, 215, 0.26) 55%,
+                rgba(215, 234, 215, 0.10) 75%,
+                rgba(215, 234, 215, 0) 100%
+            );
+
+            filter: blur(12px);
+
+            pointer-events: none;
+        }
+
+        nav a.navbar-brand {
+            color: white;
+            text-decoration: none;
+
+            font-weight: bold;
+            font-size: 1.55rem;
+
+            white-space: nowrap;
+
+            text-shadow:
+                0 2px 8px rgba(70, 110, 80, 0.18);
+
+            transition:
+                transform 0.25s ease,
+                text-shadow 0.25s ease;
+        }
+
+        nav a.navbar-brand:hover {
+            transform: translateY(-1px);
+
+            text-shadow:
+                0 4px 14px rgba(255, 255, 255, 0.50);
+        }
+
+        form.search-form {
+            display: flex;
+
+            gap: 0.55rem;
+
+            flex-grow: 1;
+            max-width: 500px;
+
+            margin: 0 1.5rem;
+        }
+
+        form.search-form input[type="search"] {
+            flex-grow: 1;
+
+            padding: 0.7rem 1.2rem;
+
+            border-radius: 30px;
+
+            border: 1px solid rgba(255, 255, 255, 0.65);
+
+            outline: none;
+
+            font-size: 0.95rem;
+
+            color: #526158;
+
+            background: rgba(255, 255, 255, 0.78);
+
+            box-shadow:
+                inset 0 1px 4px rgba(70, 110, 80, 0.06),
+                0 3px 12px rgba(70, 110, 80, 0.08);
+
+            transition: all 0.3s ease;
+        }
+
+        form.search-form input[type="search"]::placeholder {
+            color: #8fa296;
+        }
+
+        form.search-form input[type="search"]:focus {
+            background: rgba(255, 255, 255, 0.94);
+
+            border-color: rgba(255, 255, 255, 0.95);
+
+            box-shadow:
+                0 0 0 4px rgba(205, 235, 210, 0.35),
+                0 5px 18px rgba(70, 110, 80, 0.10);
+        }
+
+        form.search-form button {
+            background: rgba(255, 255, 255, 0.88);
+
+            color: #76ad82;
+
+            border: 1px solid rgba(255, 255, 255, 0.75);
+
+            border-radius: 30px;
+
+            padding: 0 1.5rem;
+
+            cursor: pointer;
+
+            font-weight: bold;
+
+            box-shadow:
+                0 4px 12px rgba(70, 110, 80, 0.10);
+
+            transition: all 0.3s ease;
+        }
+
+        form.search-form button:hover {
+            background: #ffffff;
+
+            color: #5f9b6c;
+
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 6px 18px rgba(70, 110, 80, 0.14),
+                0 0 18px rgba(220, 245, 224, 0.85);
+        }
+
+        form.search-form button:active {
+            transform: translateY(0);
+        }
+
+        .auth-buttons {
+            display: flex;
+
+            gap: 0.65rem;
+
+            align-items: center;
+
+            margin-right: auto;
+        }
+
+        .auth-buttons form,
+        .auth-buttons a {
+            color: white;
+
+            background: rgba(255, 255, 255, 0.13);
+
+            border: 1px solid rgba(255, 255, 255, 0.60);
+
+            border-radius: 25px;
+
+            padding: 0.45rem 1.1rem;
+
+            text-decoration: none;
+
+            font-weight: 600;
+
+            cursor: pointer;
+
+            backdrop-filter: blur(8px);
+
+            box-shadow:
+                0 3px 10px rgba(70, 110, 80, 0.08);
+
+            transition: all 0.3s ease;
+        }
+
+        .auth-buttons form button {
+            background: transparent;
+
+            border: none;
+
+            color: white;
+
+            font-weight: 600;
+
+            cursor: pointer;
+
+            padding: 0;
+        }
+
+        .auth-buttons form:hover,
+        .auth-buttons a:hover {
+            background: rgba(235, 250, 238, 0.38);
+
+            border-color: rgba(255, 255, 255, 0.95);
+
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 5px 16px rgba(70, 110, 80, 0.12),
+                0 0 18px rgba(220, 245, 224, 0.70);
+        }
+
+        nav > div > a {
+            transition: all 0.3s ease !important;
+        }
+
+        nav > div > a:hover {
+            background-color: rgba(235, 250, 238, 0.42) !important;
+
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 5px 15px rgba(70, 110, 80, 0.12),
+                0 0 18px rgba(220, 245, 224, 0.75);
+        }
+
+        main.container {
+            flex-grow: 1;
+
+            padding: 2.5rem 1.2rem;
+
+            max-width: 1250px;
+
+            width: 100%;
+
+            margin: 0 auto;
+
+            position: relative;
+
+            z-index: 1;
+        }
+
+        footer {
+            background: linear-gradient(
+                135deg,
+                #d7ead7,
+                #c5e3ca
+            );
+
+            color: white;
+
+            text-align: center;
+
+            padding: 1.15rem 0;
+
+            font-size: 0.9rem;
+
+            margin-top: auto;
+
+            box-shadow: none;
+        }
+
+        @media (max-width: 900px) {
+            nav {
+                flex-wrap: wrap;
+                padding: 1rem;
+            }
+
+            form.search-form {
+                order: 3;
+
+                max-width: none;
+
+                width: 100%;
+
+                margin: 0.5rem 0 0;
+            }
+
+            .auth-buttons {
+                margin-right: 0;
+            }
+        }
+
+        @media (max-width: 600px) {
+            nav {
+                gap: 0.7rem;
+            }
+
+            nav a.navbar-brand {
+                font-size: 1.3rem;
+            }
+
+            .auth-buttons form,
+            .auth-buttons a {
+                padding: 0.4rem 0.8rem;
+            }
+
+            main.container {
+                padding: 1.5rem 0.8rem;
+            }
+        }
+    </style>
+
+    {% block extra_css %}{% endblock %}
 </head>
+
 <body>
 
-<nav>
-  <a class="navbar-brand" href="/">🌿 Skincare</a>
+    <nav>
 
-  <form class="search-form" method="get" action="{% url 'search' %}">
-    <input
-      type="search"
-      name="q"
-      placeholder="Search products..."
-      aria-label="Search"
-    />
-    <button type="submit">Search</button>
-  </form>
-  <div style="margin-right: auto;"></div>
-    <a href="{% url 'wishlist' %}" style="display: inline-flex; align-items: center; justify-content: center; background-color: #88d99b; color: white; padding: 0.6rem 1.2rem; border: none; border-radius: 8px; text-decoration: none; font-weight: bold;"><i class="fas fa-heart"></i></a>
+        <a class="navbar-brand" href="/">
+            Skincare 🌸
+        </a>
 
-    <a href="{% url 'cart' %}" style="display: inline-flex; align-items: center; justify-content: center; background-color: #88d99b; color: white; padding: 0.6rem 1.2rem; border: none; border-radius: 8px; text-decoration: none; font-weight: bold;"><i class="fas fa-shopping-cart"></i></a>
+        <form class="search-form"
+              method="get"
+              action="{% url 'search' %}">
 
-    <a href="{% url 'show_profile' %}" style="display: inline-flex; align-items: center; justify-content: center; background-color: #88d99b; color: white; padding: 0.6rem 1.2rem; border: none; border-radius: 8px; text-decoration: none; font-weight: bold;"><i class="fas fa-user profile-icon"></i></a>
-  </div>
-  <div class="auth-buttons">
-    {% if user.is_authenticated %}
-      <form method="post" action="{% url 'logout' %}">
-        {% csrf_token %}
-        <button type="submit">Logout</button>
-      </form>
-    {% else %}
-      <a href="{% url 'login' %}">Login</a>
-    {% endif %}
-  </div>
+            <input
+                type="search"
+                name="q"
+                placeholder="Search products..."
+                aria-label="Search"
+            >
 
+            <button type="submit">
+                <i class="fas fa-search"></i>
+            </button>
 
+        </form>
 
+        <div style="
+            margin-right: auto;
+            display: flex;
+            gap: 0.45rem;
+            align-items: center;
+        ">
 
-</nav>
+            <a
+                href="{% url 'show_profile' %}"
+                style="
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    background-color: transparent;
+                    color: white;
+                    padding: 0.6rem 1rem;
+                    border: 1px solid rgba(255,255,255,0.55);
+                    border-radius: 10px;
+                    text-decoration: none;
+                    font-weight: bold;
+                "
+            >
+                <i class="fas fa-user"></i>
+            </a>
 
-<main class="container">
-  {% block content %}
-  {% endblock %}
-</main>
+            <a
+                href="{% url 'cart' %}"
+                style="
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    background-color: transparent;
+                    color: white;
+                    padding: 0.6rem 1rem;
+                    border: 1px solid rgba(255,255,255,0.55);
+                    border-radius: 10px;
+                    text-decoration: none;
+                    font-weight: bold;
+                "
+            >
+                <i class="fas fa-shopping-cart"></i>
+            </a>
 
-<footer>
-  &copy; 2025 Skincare Store - All rights reserved
-</footer>
+            <a
+                href="{% url 'wishlist' %}"
+                style="
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    background-color: transparent;
+                    color: white;
+                    padding: 0.6rem 1rem;
+                    border: 1px solid rgba(255,255,255,0.55);
+                    border-radius: 10px;
+                    text-decoration: none;
+                    font-weight: bold;
+                "
+            >
+                <i class="fas fa-heart"></i>
+            </a>
+
+        </div>
+
+        <div class="auth-buttons">
+
+            {% if user.is_authenticated %}
+
+                <form method="post" action="{% url 'logout' %}">
+                    {% csrf_token %}
+
+                    <button type="submit">
+                        Logout
+                    </button>
+                </form>
+
+            {% else %}
+
+                <a href="{% url 'login' %}">
+                    Login
+                </a>
+
+            {% endif %}
+
+        </div>
+
+    </nav>
+
+    <main class="container">
+
+        {% block content %}
+        {% endblock %}
+
+    </main>
+
+    <footer>
+        <p>© 2025 Skincare Store. All rights reserved.</p>
+    </footer>
 
 </body>
 </html>
